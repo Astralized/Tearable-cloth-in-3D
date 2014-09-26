@@ -1,6 +1,4 @@
 /*
-cloth3d.js v0.1
-
 Copyright (c) 2014 Astralized
 https://github.com/Astralized
 https://codepen.io/Astralized/
@@ -58,7 +56,7 @@ var halfx         = canvas.width / 2,
             };
 
 ctx.lineWidth     = 0.5;
-ctx.strokeStyle   = "#ddd";
+ctx.strokeStyle   = "#eee";
 
 window.requestAnimFrame =
     window.requestAnimationFrame ||
@@ -87,7 +85,7 @@ function init() {
         x = Math.cos(2 * Math.PI * (i / 40)) * 100;
         z = Math.sin(2 * Math.PI * (i / 40)) * 100;
 
-        for(y = cloth_rows / 2 * -20 + 20; y < cloth_rows / 2 * 20; y+=20) {
+        for(y = cloth_rows / 2 * -20 + 20; y < cloth_rows * 10; y+=20) {
 
             create_pointmass(x,y,z);
         }
@@ -162,14 +160,14 @@ function draw3D() {
         zcosa  = Math.cos(rotatez);
         zsina  = Math.sin(rotatez);
 
-        xy     = xcosa*y - xsina*z; //x
-        xz     = xsina*y + xcosa*z;
+        xy     = xcosa * y  - xsina * z; //x
+        xz     = xsina * y  + xcosa * z;
 
-        yz     = ycosa*xz - ysina*x; //y
-        yx     = ysina*xz + ycosa*x;
+        yz     = ycosa * xz - ysina * x; //y
+        yx     = ysina * xz + ycosa * x;
 
-        zx     = zcosa*yx - zsina*xy; //z
-        zy     = zsina*yx + zcosa*xy;
+        zx     = zcosa * yx - zsina * xy; //z
+        zy     = zsina * yx + zcosa * xy;
 
         xyz[0] = zx;
         xyz[1] = zy;
@@ -247,14 +245,9 @@ function update_constraint() {
 
             diff  = (constraints[c][2] - dist) / dist;
 
-            dx    = c1[0] - c2[0];
-            dy    = c1[1] - c2[1];
-            dz    = c1[2] - c2[2];
-
-
-            dx    = dx * 0.5;
-            dy    = dy * 0.5;
-            dz    = dz * 0.5;
+            dx    = (c1[0] - c2[0]) * 0.5;
+            dy    = (c1[1] - c2[1]) * 0.5;
+            dz    = (c1[2] - c2[2]) * 0.5;
 
             c1[0] = c1[0] + dx * diff;
             c1[1] = c1[1] + dy * diff;
@@ -263,8 +256,6 @@ function update_constraint() {
             c2[0] = c2[0] - dx * diff;
             c2[1] = c2[1] - dy * diff; 
             c2[2] = c2[2] - dz * diff;
-
-            constraints[c][3] = dist;
 
             if(dist > tear_distance) {
                 constraints.splice(c, 1);
@@ -319,10 +310,12 @@ function update_mouse() {
                 pointmass[i][4] = pointmass[i][4] - Math.min(1, (mouse.y - mouse.oy) / 10);
             }
 
-            //lazy cut for m2
-            if(dist < 21 && mouse.button == 3) {
-                pointmass[i][4] = -1000;
-                pointmass[i][3] = -1000;
+            if(dist < 20 && mouse.button == 3) {
+               for(c = 0; c < constraints.length; c++) {
+                    if(constraints[c][0] == i || constraints[c][1] == i) {
+                        constraints.splice(c, 1);
+                    }
+                }
             }
 
         }
