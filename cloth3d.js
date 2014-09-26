@@ -31,7 +31,7 @@ ctx    = canvas.getContext('2d');
 var physics_acc   = 5,
     tear_distance = 40,
     auto_rotate   = 1,
-    field_of_view = 2000,
+    field_of_view = 500,
     gravity       = 0.2,
     friction      = 0.99,
     cloth_rows    = 20,
@@ -58,7 +58,7 @@ var halfx         = canvas.width / 2,
             };
 
 ctx.lineWidth     = 0.5;
-ctx.strokeStyle   = "#ccc";
+ctx.strokeStyle   = "#ddd";
 
 window.requestAnimFrame =
     window.requestAnimationFrame ||
@@ -78,7 +78,7 @@ function init() {
         x = Math.cos(2 * Math.PI * (i / 40)) * 100;
         z = Math.sin(2 * Math.PI * (i / 40)) * 100;
 
-        create_pointmass(x, -300, z);
+        create_pointmass(x, cloth_rows / 2 * -20, z);
     }
 
     //rest
@@ -87,7 +87,7 @@ function init() {
         x = Math.cos(2 * Math.PI * (i / 40)) * 100;
         z = Math.sin(2 * Math.PI * (i / 40)) * 100;
 
-        for(y = -300; y < cloth_rows * 20 - 299; y+=20) {
+        for(y = cloth_rows / 2 * -20 + 20; y < cloth_rows / 2 * 20; y+=20) {
 
             create_pointmass(x,y,z);
         }
